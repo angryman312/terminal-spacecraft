@@ -92,7 +92,7 @@ const Home = () => {
           </button>
         )}
 
-        <ConnectWalletButton title={"Title"} />
+        <ConnectWalletButton />
       </div>
     </div>
   );

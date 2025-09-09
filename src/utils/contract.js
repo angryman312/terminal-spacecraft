@@ -1,0 +1,2 @@
+export const stationPurchaseContractAddress = "0x8A67BC3c0AeAe4a9Cf3913211190F653184E7237";
+export const stationContractAddress = "0xC1737CeF1Ee848D47D68F4c67f3188c71997E3fC";
