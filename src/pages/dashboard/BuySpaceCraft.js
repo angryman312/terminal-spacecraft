@@ -17,25 +17,36 @@ import { pageSet } from "@/redux/slices/pageSlice";
 import styles from "@/assets/css/dashboard/buyspace.module.css";
 
 // import assets
-import SphereImg from "@/assets/images/sphere.gif";
+import CruxioImg from "@/assets/images/cruxio.png";
 
 // Smart Contract details
-import { stationPurchaseContractAddress } from "@/utils/contract";
-import { stationPurchaseABI } from "@/utils/abis/stationPurchase";
+import {
+  stationContractAddress,
+  spacecraftPurchaseContractAddress,
+} from "@/utils/contract";
+import { spacecraftPurchaseABI } from "@/utils/abis/spacecraftPurchase";
+import { stationABI } from "@/utils/abis/station";
 import ExplainLine from "@/components/ExplainLine";
 import { useToast } from "@/components/ToastProvider";
 
-const BuySpace = () => {
+const BuySpaceCraft = () => {
   const dispatch = useDispatch();
   const { showToast } = useToast();
   const { writeContract, data: txHash, error: writeError } = useWriteContract();
   const { isSuccess } = useWaitForTransactionReceipt({ hash: txHash });
 
-  // Fetching Account balance
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { data: balance } = useBalance({
     address,
     watch: true,
+  });
+
+  // ✅ read station info for the connected wallet
+  const { data: stationInfo, isSuccess: isReadSuccess } = useReadContract({
+    address: stationContractAddress,
+    abi: stationABI,
+    functionName: "getStationInfo",
+    args: address ? [address] : undefined,
   });
 
   const formattedBalance = balance
@@ -49,16 +60,25 @@ const BuySpace = () => {
 
   // Ordered sequence
   const elements = [
-    { type: "title", text: "Buy Space Station" },
+    { type: "title", text: "Buy SpaceCraft" },
     {
       type: "subTitle",
-      text: "Purchase a mining station to deploy your first ship and start earning UFO tokens",
+      text: "Purchase a Ship, Deploy IT, And Start generating UFO Tokens",
     },
     { type: "image" }, // static image
     {
       type: "deployBtn",
-      text: "> 1. Deploy station [0.001 ETH]",
-      action: () => handleBuyStation(),
+      text:
+        stationInfo && Number(stationInfo[0]) > 0
+          ? "> 1. Deploy SpaceCraft [1000 UFO]"
+          : "> Purchase station first",
+      action: () => {
+        if (stationInfo && Number(stationInfo[0]) > 0) {
+          handleBuySpaceCraft();
+        } else {
+          dispatch(pageSet("alert"));
+        }
+      },
     },
     { type: "text", text: `*Insufficent ${formattedBalance} Balance` },
   ];
@@ -90,23 +110,31 @@ const BuySpace = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      showToast("Buy Station Success!");
+      showToast("Buy Spacecrafts Success!");
       dispatch(pageSet("miningcore"));
     }
   }, [isSuccess, dispatch]);
 
-  // Handle Buy Station button click
-  const handleBuyStation = async () => {
-    try {
-      await writeContract({
-        address: stationPurchaseContractAddress,
-        abi: stationPurchaseABI,
-        functionName: "buyStation",
-        value: parseEther("0.001"),
-      });
-    } catch (err) {
-      console.error("Error buying station:", err);
-      showToast("Error buying station.");
+  const getRandomInt = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
+  // Handle Buy Spacecraft button click
+  const handleBuySpaceCraft = async () => {
+    if (stationInfo && Number(stationInfo[0]) > 0) {
+      try {
+        await writeContract({
+          address: spacecraftPurchaseContractAddress,
+          abi: spacecraftPurchaseABI,
+          functionName: "mint",
+          args: [address, stationInfo[0], 1, getRandomInt(150, 250)],
+        });
+      } catch (err) {
+        console.error("Error Buying SpaceCraft:", err);
+        showToast("Error Buying SpaceCraft.");
+      }
+    } else {
+      showToast("Please purchase station first");
     }
   };
 
@@ -141,7 +169,7 @@ const BuySpace = () => {
       {displayed.find((el) => el.type === "image") && (
         <div className={styles.wrapper}>
           <Image
-            src={SphereImg}
+            src={CruxioImg}
             alt="ship"
             priority
             className={styles.shipImg}
@@ -200,12 +228,12 @@ const BuySpace = () => {
               order: "1",
               transform: "translate(-2px, 8px) rotate(-25deg)",
             }}
-            text="Base Fleet Power: 100-150"
+            text="Base Fleet Power: 125-550"
           />
           <ExplainLine
             explainStyle={{
               top: "50%",
-              right: "30px",
+              right: "5px",
               transform: "translateY(-50%)",
             }}
             textStyle={{
@@ -214,7 +242,7 @@ const BuySpace = () => {
             dragStyle={{
               order: "1",
             }}
-            text="Scout-Class Ship NFT"
+            text="Scout to heavy Ship NFT"
           />
           <ExplainLine
             explainStyle={{
@@ -268,4 +296,4 @@ const BuySpace = () => {
   );
 };
 
-export default BuySpace;
+export default BuySpaceCraft;

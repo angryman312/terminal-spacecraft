@@ -1,5 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
+import { useAccount } from "wagmi";
 
 // redux slices
 import { pageSet } from "@/redux/slices/pageSlice";
@@ -30,9 +31,13 @@ import ClaimPressImg from "@/assets/images/buttons/claim_press.png";
 
 // import components
 import FooterButton from "@/components/FooterButton";
+import { playButtonClick, playClaim } from "@/utils/sounds";
+import { useToast } from "@/components/ToastProvider";
 
 const FooterSection = () => {
   const dispatch = useDispatch();
+  const { showToast } = useToast();
+  const { isConnected } = useAccount();
 
   return (
     <div className={styles.footerSection}>
@@ -45,7 +50,14 @@ const FooterSection = () => {
             alt="Mining Button"
             className={styles.buttonImg}
             style={{ left: "10px" }}
-            onClick={() => dispatch(pageSet("miningcore"))}
+            onClick={() => {
+              if (isConnected) {
+                dispatch(pageSet("miningcore"));
+                playButtonClick();
+              } else {
+                showToast("Please connect wallet.");
+              }
+            }}
           />
           <FooterButton
             defaultImg={DatabaseImg}
@@ -54,7 +66,14 @@ const FooterSection = () => {
             alt="Database Button"
             className={styles.buttonImg}
             style={{ left: "182px" }}
-            onClick={() => dispatch(pageSet("databasepage"))}
+            onClick={() => {
+              if (isConnected) {
+                dispatch(pageSet("databasepage"));
+                playButtonClick();
+              } else {
+                showToast("Please connect wallet.");
+              }
+            }}
           />
           <FooterButton
             defaultImg={RankingImg}
@@ -63,7 +82,14 @@ const FooterSection = () => {
             alt="Ranking Button"
             className={styles.buttonImg}
             style={{ right: "184px" }}
-            onClick={() => dispatch(pageSet("rankingpage"))}
+            onClick={() => {
+              if (isConnected) {
+                dispatch(pageSet("rankingpage"));
+                playButtonClick();
+              } else {
+                showToast("Please connect wallet.");
+              }
+            }}
           />
           <FooterButton
             defaultImg={ManualImg}
@@ -72,7 +98,14 @@ const FooterSection = () => {
             alt="Manual Button"
             className={styles.buttonImg}
             style={{ right: "12px" }}
-            onClick={() => dispatch(pageSet("manualpage"))}
+            onClick={() => {
+              if (isConnected) {
+                dispatch(pageSet("manualpage"));
+                playButtonClick();
+              } else {
+                showToast("Please connect wallet.");
+              }
+            }}
           />
         </div>
         <div className={styles.rightSection}>
@@ -83,7 +116,10 @@ const FooterSection = () => {
             alt="Claim Button"
             className={styles.buttonRightImg}
             style={{ right: "50%", transform: "translateX(50%)" }}
-            onClick={() => dispatch(pageSet("claimpage"))}
+            onClick={() => {
+              dispatch(pageSet("claimpage"));
+              playClaim();
+            }}
           />
         </div>
       </div>
