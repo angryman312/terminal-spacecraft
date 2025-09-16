@@ -166,6 +166,8 @@ const MiningCore = () => {
             alt="ship"
             className={styles.shipImg}
             priority
+            quality={100}
+            unoptimized
           />
         </div>
       )}

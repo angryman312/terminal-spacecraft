@@ -129,7 +129,14 @@ const Home = () => {
 
   return (
     <div className={styles.wrapper}>
-      <Image src={LogoImg} alt="logo" className={styles.logoImg} priority />
+      <Image
+        src={LogoImg}
+        alt="logo"
+        className={styles.logoImg}
+        priority
+        quality={100}
+        unoptimized
+      />
 
       {/* Title */}
       {displayed.find((el) => el.type === "title") && (
