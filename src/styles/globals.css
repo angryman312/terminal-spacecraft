@@ -18,14 +18,29 @@
 * {
   padding: 0;
   margin: 0;
+
+  /* Box sizing */
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
+
   color: #4aff41;
   font-family: "MyFont";
   font-size: 16px;
   font-weight: 400;
   letter-spacing: 1px;
   text-transform: uppercase;
+
+  /* User select */
+  -webkit-user-select: none; /* Chrome, Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+ */
   user-select: none;
+
+  /* Transition */
+  -webkit-transition: background-color 0.2s ease-in-out;
+  -o-transition: background-color 0.2s ease-in-out;
+  transition: background-color 0.2s ease-in-out;
 }
 
 @media (max-width: 1024px) {
@@ -174,10 +189,17 @@ a {
   position: absolute;
   pointer-events: none;
   z-index: 9999;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
   flex-direction: column;
   top: 48px;
   left: 401px;
+  -webkit-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
   transform: translateX(-50%);
 }
 
@@ -191,6 +213,7 @@ a {
   margin: 4px;
   font-size: 14px;
   font-weight: 500;
+  -webkit-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   pointer-events: auto;
 }
@@ -211,12 +234,16 @@ a {
 .toast.top-center {
   top: 20px;
   left: 50%;
+  -webkit-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
   transform: translateX(-50%);
 }
 
 .toast.bottom-center {
   bottom: 20px;
   left: 50%;
+  -webkit-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
   transform: translateX(-50%);
 }
 
